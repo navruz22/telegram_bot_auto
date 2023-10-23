@@ -1,10 +1,13 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import CustomInput from "../Components/CustomInput"
 import CustomBtn from "../Components/CustomBtn"
 import Api from "../Config/Api"
+import { AuthContext } from "../Context"
 
 
 const LoginPage = () => {
+
+    const {setIsAuth} = useContext(AuthContext);
 
     const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
@@ -16,6 +19,7 @@ const LoginPage = () => {
                 password
             })
             localStorage.setItem('token', response.data.token)
+            setIsAuth(true)
         } catch (e) {
             alert(e.response.data.message)
         }
@@ -31,8 +35,8 @@ const LoginPage = () => {
         handleLogin()
     }
 
-    return <div className="w-full h-full flex justify-center items-center items-center mx-auto">
-        <div className="min-w-[500px] grid gap-4">
+    return <div className="pt-[100px]">
+        <div className="mx-auto max-w-[500px] grid gap-4">
             <CustomInput
                 label={'Логин'}
                 value={login}
