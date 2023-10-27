@@ -6,7 +6,7 @@ const CustomMultiSelect = ({ defaultValue, options, onChange, blockClasss, label
     return <div className={blockClasss}>
         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{label}</label>
         <Select
-            defaultValue={defaultValue}
+            value={defaultValue}
             isMulti
             name="colors"
             options={options}

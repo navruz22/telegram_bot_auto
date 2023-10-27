@@ -36,6 +36,18 @@ class ProcientController {
         }
     }
 
+    async delete(req, res) {
+        try {
+            const {id} = req.params
+            await Procient.findByIdAndDelete(id)
+            
+            res.status(200).json(id)
+        } catch (error) {
+            console.log(error)
+            res.status(400).json({message: 'Server error'})
+        }
+    }
+
 }
 
 module.exports = new ProcientController()

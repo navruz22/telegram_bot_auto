@@ -6,11 +6,13 @@ const carTypeRoutes = require('./carTypeRoutes')
 const carModelRoutes = require('./carModelRoutes')
 const procientRoutes = require('./procientRoutes')
 const monthRoutes = require('./monthRoutes')
+const carRoutes = require('./carRoutes')
 
 router.use('/auth', authRoutes)
 router.use('/car_type',  auth_middleware, carTypeRoutes)
 router.use('/car_model',  auth_middleware, carModelRoutes)
 router.use('/procient',  auth_middleware, procientRoutes)
 router.use('/month',  auth_middleware, monthRoutes)
+router.use('/car',  carRoutes)
 
 module.exports = router

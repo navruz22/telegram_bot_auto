@@ -45,6 +45,7 @@ const LoginPage = () => {
             <CustomInput
                 label={'Пароль'}
                 value={password}
+                type={"password"}
                 onChange={(e) => setPassword(e.target.value)}
             />
             <div className="text-center">

@@ -5,6 +5,7 @@ import Api from "../Config/Api"
 import { FiEdit } from 'react-icons/fi';
 import { toast } from 'react-toastify'
 import CustomMultiSelect from "../Components/CustomMultiSelect";
+import EditBtn from "../Components/EditBtn";
 
 const CarModel = () => {
 
@@ -29,13 +30,15 @@ const CarModel = () => {
         try {
             const { data } = await Api.post(`/car_model/create`, {
                 name,
+                car_types: carTypes
             })
-            setName('')
+            clearData()
             setCarModels([...carModels, {
                 _id: data._id,
-                name: data.name
+                name: data.name,
+                carTypes: data.carTypes
             }])
-            toast.success(`Тип ${data.name} успешно создан!`)
+            toast.success(`Модель ${data.name} успешно создан!`)
         } catch (error) {
             toast.error(error.response.data.message)
         }
@@ -45,17 +48,18 @@ const CarModel = () => {
         try {
             const { data } = await Api.put(`/car_model/update`, {
                 name,
-                _id: modelId
+                _id: modelId,
+                car_types: carTypes,
             })
-            setName('')
-            setModelId('')
+            clearData()
             setCarModels([...carModels].map(type => {
                 if (type._id === data._id) {
                     type.name = data.name;
+                    type.carTypes = data.carTypes
                 }
                 return type
             }))
-            toast.success(`Тип ${data.name} успешно обнавлен!`)
+            toast.success(`Модель ${data.name} успешно обнавлен!`)
         } catch (error) {
             toast.error(error.response.data.message)
         }
@@ -65,6 +69,9 @@ const CarModel = () => {
         e.preventDefault()
         if (!name) {
             return toast.warn("Заполните поля!")
+        }
+        if (carTypes.length === 0) {
+            return toast.warn("Выберите тип машины!")
         }
         modelId ? handleUpdate() : handleCreate()
     }
@@ -90,12 +97,33 @@ const CarModel = () => {
     //============================================================
 
     const [carTypes, setCarTypes] = useState([])
+    const [selectedValues, setSelectedValues] = useState([])
     
     const handleSelect = (e) => {
-        console.log(e);
-        setCarTypes([...carTypes, e.value])
+        setCarTypes([...e].map(item => item.value))
+        setSelectedValues(e)
     }
-    console.log(carTypes);
+    
+    //============================================================
+    //============================================================
+
+    const handleEdit = (model) => {
+        setModelId(model._id)
+        setName(model.name)
+        setSelectedValues(model.carTypes.map(el => ({
+            value: el._id,
+            label: el.name
+        })))
+        setCarTypes([...model.carTypes].map(item => item._id))
+    }
+
+    const clearData = () => {
+        setModelId('')
+        setName('')
+        setSelectedValues([])
+        setCarTypes([])
+    }
+
     //============================================================
     //============================================================
 
@@ -108,9 +136,9 @@ const CarModel = () => {
     return <div className="py-[70px]">
         <form className="max-w-[800px] mx-auto grid grid-cols-4 gap-4 mb-[100px]">
             <CustomInput value={name} onChange={(e) => setName(e.target.value)} label={'Модель авто'} blockClasss="w-full" />
-            <CustomMultiSelect options={typeOptions} onChange={handleSelect} blockClasss={"col-span-2"} label="Тип авто" />
+            <CustomMultiSelect defaultValue={selectedValues} options={typeOptions} onChange={handleSelect} blockClasss={"col-span-2"} label="Тип авто" />
             <div className="flex items-end">
-                <CustomBtn onClick={checkData} title={'Создать'} />
+                {modelId ? <EditBtn title={'Редактировать'} cancel={clearData} onClick={checkData} /> : <CustomBtn onClick={checkData} title={'Создать'} />}
             </div>
         </form>
 
@@ -125,6 +153,9 @@ const CarModel = () => {
                             Тип
                         </th>
                         <th scope="col" class="px-6 py-3">
+                            Модель
+                        </th>
+                        <th scope="col" class="px-6 py-3">
 
                         </th>
                     </tr>
@@ -136,13 +167,13 @@ const CarModel = () => {
                                 {ind + 1}
                             </th>
                             <td class="px-6 py-4">
+                                {model.carTypes.map(el => el.name + " ")}
+                            </td>
+                            <td class="px-6 py-4">
                                 {model.name}
                             </td>
                             <td class="px-6 py-4">
-                                <button onClick={() => {
-                                    setModelId(model._id)
-                                    setName(model.name)
-                                }}>
+                                <button onClick={() => handleEdit(model)}>
                                     <FiEdit fontSize={20} className="text-amber-400" />
                                 </button>
                             </td>

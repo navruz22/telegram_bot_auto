@@ -4,6 +4,7 @@ import CustomInput from "../Components/CustomInput";
 import Api from "../Config/Api"
 import { FiEdit } from 'react-icons/fi';
 import {toast} from 'react-toastify'
+import AccessModal from "../Components/AccessModal";
 
 const CarType = () => {
 
@@ -109,12 +110,19 @@ const CarType = () => {
                                 }}>
                                     <FiEdit fontSize={20} className="text-amber-400" />
                                 </button>
+                                {/* <button onClick={() => {
+                                    setTypeId(type._id)
+                                    setName(type.name)
+                                }}>
+                                    <FiEdit fontSize={20} className="text-amber-400" />
+                                </button> */}
                             </td>
                         </tr>
                     )}
                 </tbody>
             </table>
         </div>
+        <AccessModal text={"Потвердите, что хотите удалить тип машины!"} />
     </div>
 }
 
